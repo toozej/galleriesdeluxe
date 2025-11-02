@@ -1,5 +1,41 @@
-{{ with partial "galleriesdeluxe/get-gallery.html" . }}
-  {{ $gallery := partial "gallerydeluxe/init.html" (dict "images" .images) }}
+{{ $pages := .Pages }}
+{{ if .IsHome }}
+  {{ with site.GetPage "galleries" }}
+    {{ $pages = .RegularPagesRecursive }}
+  {{ end }}
+{{ end }}
+
+<div class="galleries">
+  {{ range $pages }}
+    {{ with partial "galleriesdeluxe/get-gallery.html" . }}
+      <div class="card">
+        <a class="card-img" href="{{ .page.RelPermalink }}">
+          <img
+            src="{{ .thumb.RelPermalink }}"
+            alt="{{ .thumb.Name }}"
+            class=""
+            width="{{ .thumb.Width }}"
+            height="{{ .thumb.Height }}" />
+          <span class="num-photos"
+            >{{ .images | len }} {{ T "photo" ( .images | len) }}</span
+          >
+        </a>
+        <div class="body">
+          <h2>
+            <a href="{{ .page.RelPermalink }}">{{ .page.LinkTitle }}</a>
+          </h2>
+          <p>
+            {{ .page.Summary }}
+          </p>
+        </div>
+      </div>
+    {{ end }}
+  {{ end }}
+</div>
+
+{{ $galleryData := partial "galleriesdeluxe/get-gallery.html" . }}
+{{ if $galleryData.images }}
+  {{ $gallery := partial "gallerydeluxe/init.html" (dict "images" $galleryData.images) }}
   {{ $params := site.Params.gallerydeluxe }}
   <div id="gallerydeluxe" data-gd-image-data-url="{{ $gallery.imageDataUrl }}">
     <div id="gd-modal" class="gd-modal">

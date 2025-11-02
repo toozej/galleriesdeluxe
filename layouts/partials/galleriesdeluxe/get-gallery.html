@@ -1,9 +1,30 @@
-{{ $gallery := "" }}
+{{ $gallery := dict "images" (slice) }}
 
 {{ $images := slice }}
-{{ if eq .Kind "term" }}
+{{ if eq .Layout "from-text-file" }}
+  {{ $imagesList := .Resources.GetMatch "images.txt" }}
+  {{ if $imagesList }}
+    {{ $imagesURLs := split $imagesList.Content "\n" }}
+    {{ range $imagesURLs }}
+      {{ with try (resources.GetRemote .) }}
+        {{ with .Err }}
+          {{ warnf "Error fetching %s: %s" . .Err }}
+        {{ else with .Value }}
+          {{ $img := . | resources.Copy (printf "%s%s" $.File.Dir .Name) }}
+          {{ $images = $images | append $img }}
+        {{ else }}
+          {{ warnf "Unable to get remote resource %q" . }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  {{ else }}
+    {{ warnf "No images.txt found for %s" .RelPermalink }}
+  {{ end }}
+{{ else if eq .Kind "term" }}
   {{ range .Pages }}
-    {{ $images = $images | append (.Resources.ByType "image") }}
+    {{ with partial "galleriesdeluxe/get-gallery.html" . }}
+      {{ $images = $images | append .images }}
+    {{ end }}
   {{ end }}
 {{ else }}
   {{ $images = (.Resources.ByType "image") }}
