@@ -31,3 +31,23 @@ These can be overriden either in order of presedence:
 
 1. The [Hugo config](https://github.com/bep/galleriesdeluxe/blob/9e3c68776ba534601c33bb644a4ba348f519e002/exampleSite/hugo.toml#L18)
 2. Adding a [assets/scss/galleriesdeluxe/vars-custom.scss](https://github.com/bep/galleriesdeluxe/blob/main/exampleSite/assets/scss/galleriesdeluxe/vars-custom.scss) file to your project.
+
+## Featured Image
+
+You can specify a featured image for any gallery by adding a `featured` parameter to the gallery's front matter. This image will be used as the thumbnail when displaying the gallery on the gallery index page.
+
+### How to Set a Featured Image
+
+1. In your gallery's front matter (e.g., `content/galleries/my-gallery/index.md`), add a `featured` parameter with the filename of the image you want to feature:
+
+    ```yaml
+    ---
+    title: My Awesome Gallery
+    date: 2024-01-01
+    featured: "my-featured-photo.jpg"
+    ---
+    ```
+
+2. Ensure the `featured` parameter matches exactly the filename of one of the images in your gallery directory.
+
+If no `featured` parameter is specified, the theme will randomly select an image from the gallery to use as the thumbnail.
