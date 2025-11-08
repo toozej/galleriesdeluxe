@@ -33,8 +33,14 @@
 {{ with $images }}
   {{ $first := "" }}
   {{ with $.Params.featured }}
+    {{ $featured := . }}
+    {{ $featuredBase := path.Base $featured }}
+    {{ $featuredExt := path.Ext $featuredBase }}
+    {{ $featuredName := strings.TrimSuffix $featuredExt $featuredBase }}
     {{ range $images }}
-      {{ if eq .Name $.Params.featured }}
+      {{ $imgBase := path.Base .Name }}
+      {{ $imgExt := path.Ext $imgBase }}
+      {{ if and (strings.Contains $imgBase $featuredName) (eq $imgExt $featuredExt) }}
         {{ $first = . }}
       {{ end }}
     {{ end }}
