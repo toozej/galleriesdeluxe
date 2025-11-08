@@ -1,7 +1,59 @@
-{{ with partial "galleriesdeluxe/get-gallery.html" . }}
-  {{ $gallery := partial "gallerydeluxe/init.html" (dict "images" .images) }}
+{{ $pages := .Pages }}
+{{ if .IsHome }}
+  {{ with site.GetPage "galleries" }}
+    {{ $pages = .RegularPagesRecursive }}
+  {{ end }}
+{{ end }}
+
+<div class="galleries">
+  {{ $first_gallery := slice }}
+  {{ $other_galleries := slice }}
+  {{ range $pages }}
+    {{ $gallery_data := partial "galleriesdeluxe/get-gallery.html" . }}
+    {{ if $gallery_data }}
+      {{ if eq $gallery_data.first true }}
+        {{ $first_gallery = $first_gallery | append . }}
+      {{ else }}
+        {{ $other_galleries = $other_galleries | append . }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+
+  {{ $sorted_galleries := $first_gallery | append $other_galleries }}
+
+  {{ range $sorted_galleries }}
+    {{ with partial "galleriesdeluxe/get-gallery.html" . }}
+      <div class="card">
+        <a class="card-img" href="{{ .page.RelPermalink }}">
+          <img
+            src="{{ .thumb.RelPermalink }}"
+            alt="{{ .thumb.Name }}"
+            class=""
+            width="{{ .thumb.Width }}"
+            height="{{ .thumb.Height }}" />
+          <span class="num-photos"
+            >{{ .images | len }} {{ T "photo" ( .images | len) }}</span
+          >
+        </a>
+        <div class="body">
+          <h2>
+            <a href="{{ .page.RelPermalink }}">{{ .page.LinkTitle }}</a>
+          </h2>
+          <p>
+            {{ .page.Summary }}
+          </p>
+        </div>
+      </div>
+    {{ end }}
+  {{ end }}
+</div>
+
+{{ $galleryData := partial "galleriesdeluxe/get-gallery.html" . }}
+{{ if $galleryData.images }}
+  {{ $gallery := partial "gallerydeluxe/init.html" (dict "images" $galleryData.images) }}
   {{ $params := site.Params.gallerydeluxe }}
-  <div id="gallerydeluxe" data-gd-image-data-url="{{ $gallery.imageDataUrl }}">
+  {{ $pinnedClass := $galleryData.pinnedClass }}
+  <div id="gallerydeluxe" data-gd-image-data-url="{{ $gallery.imageDataUrl }}" class="{{ $pinnedClass }}">
     <div id="gd-modal" class="gd-modal">
       <span id="gd-modal-close" class="gd-modal-close">&times;</span>
       {{ if $params.enable_exif }}
