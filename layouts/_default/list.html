@@ -1,7 +1,7 @@
 {{ define "main" }}
   <div class="galleries">
     {{ $pages := .Pages }}
-    {{ if .IsHome }}
+    {{ if or .IsHome (and (eq .Kind "section") (eq .Section "galleries")) }}
       {{ with site.GetPage "galleries" }}
         {{ $pages = .RegularPagesRecursive }}
       {{ end }}
