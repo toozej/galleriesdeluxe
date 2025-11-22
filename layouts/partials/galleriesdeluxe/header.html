@@ -3,9 +3,7 @@
   <div>
     {{ if .IsHome }}
       {{ $pages := slice (site.GetPage "categories") }}
-      {{ with site.GetPage "about" }}
-        {{ $pages = $pages | append . }}
-      {{ end }}
+      {{ $pages = $pages | append (where (where site.RegularPages ".Params.layout" "page") ".Section" "!=" "galleries") }}
       <ul>
         {{ range $pages }}
           <li>
