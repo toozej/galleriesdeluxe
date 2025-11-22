@@ -1,4 +1,4 @@
-module github.com/bep/galleriesdeluxe
+module github.com/toozej/galleriesdeluxe
 
 go 1.20
 
