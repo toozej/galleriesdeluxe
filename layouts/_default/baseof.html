@@ -6,7 +6,33 @@
       {{ .Title }}
     </title>
 
-    <link rel="icon" href="{{ `favicon.svg` | relURL }}" type="image/svg+xml" />
+    {{ $faviconHref := "" }}
+    {{ $faviconType := "" }}
+    {{ if os.FileExists "assets/favicon.svg" }}
+      {{ $res := resources.Get "favicon.svg" }}
+      {{ $faviconHref = $res.RelPermalink }}
+      {{ $faviconType = $res.MediaType }}
+    {{ else if os.FileExists "assets/favicon.ico" }}
+      {{ $res := resources.Get "favicon.ico" }}
+      {{ $faviconHref = $res.RelPermalink }}
+      {{ $faviconType = $res.MediaType }}
+    {{ else if os.FileExists "assets/favicon.png" }}
+      {{ $res := resources.Get "favicon.png" }}
+      {{ $faviconHref = $res.RelPermalink }}
+      {{ $faviconType = $res.MediaType }}
+    {{ else if os.FileExists "static/favicon.svg" }}
+      {{ $faviconHref = "favicon.svg" | relURL }}
+      {{ $faviconType = "image/svg+xml" }}
+    {{ else if os.FileExists "static/favicon.ico" }}
+      {{ $faviconHref = "favicon.ico" | relURL }}
+      {{ $faviconType = "image/x-icon" }}
+    {{ else if os.FileExists "static/favicon.png" }}
+      {{ $faviconHref = "favicon.png" | relURL }}
+      {{ $faviconType = "image/png" }}
+    {{ end }}
+    {{ if $faviconHref }}
+      <link rel="icon" href="{{ $faviconHref }}" type="{{ $faviconType }}" />
+    {{ end }}
 
     <meta name="viewport" content="width=device-width,minimum-scale=1" />
     {{ hugo.Generator }}
