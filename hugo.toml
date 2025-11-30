@@ -33,6 +33,6 @@ baseURL = "https://example.com"
         source = "static"
         target = "static"
     [[module.imports]]
-        path = "github.com/bep/gallerydeluxe"
+        path = "github.com/toozej/gallerydeluxe"
     [[module.imports]]
         path = "github.com/bep/hugo-mod-misc/common-partials"
