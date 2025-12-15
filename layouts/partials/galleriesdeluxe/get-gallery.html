@@ -1,7 +1,8 @@
 {{ $gallery := dict "images" (slice) }}
-
 {{ $images := slice }}
-{{ if eq .Layout "from-text-file" }}
+{{ $thumb := "" }}
+
+{{ if or (eq .Layout "from-text-file") (eq .Layout "submission-from-text-file" ) }}
   {{ $imagesList := .Resources.GetMatch "images.txt" }}
   {{ if $imagesList }}
     {{ $imagesURLs := split $imagesList.Content "\n" }}
@@ -31,6 +32,8 @@
 {{ end }}
 
 {{ with $images }}
+
+  {{/* Determine first image if set in Markdown frontmatter */}}
   {{ $first := "" }}
   {{ with $.Params.featured }}
     {{ $featured := . }}
@@ -45,29 +48,79 @@
       {{ end }}
     {{ end }}
   {{ end }}
-  {{ $filters := slice
+
+  {{/* Determine list of filters to be applied in Image Processing pipeline */}}
+  {{/* Define default list of filters for fullsize images */}}
+  {{ $fullsizeFilters := slice
     images.AutoOrient
-    (images.Process "resize 400x")
+    (images.Process "webp")
   }}
-  {{ with $first }}
-    {{ $thumb := images.Filter $filters . }}
-    {{ $gallery = dict
-      "page" $
-      "images" $images
-      "thumb" $thumb
-      "first" $.Params.first
+
+  {{/* Define default list of thumbnail filters */}}
+  {{ $thumbFilters := slice
+    images.AutoOrient
+    (images.Process "resize 400x webp")
+  }}
+
+  {{ $submissionFilters := slice }}
+  {{ if or (eq $.Kind "submission") (eq $.Kind "submission-from-text-file" ) }}
+    {{/* Filename as caption text for images in submission galleries */}}
+    {{ $submissionFilename := . }}
+    {{ $submissionFilenameBase := path.Base $submissionFilename }}
+    {{ $submissionFilenameExt := path.Ext $submissionFilenameBase }}
+    {{ $submissionFilenameName := strings.TrimSuffix $submissionFilenameExt $submissionFilenameBase }}
+    {{ $text := T $submissionFilenameName }}
+
+    {{/* Options for caption text for images in submission galleries */}}
+    {{ $opts := dict
+      "alignx" "center"
+      "aligny" "bottom"
+      "color" "#000000"
+      "size" 10
     }}
+
+    {{/* Filters for submission galleries */}}
+    {{ $submissionFilters := slice
+      images.AutoOrient
+      (images.Padding 40 40 "#ffffff")
+      (images.Text $text $opts)
+      (images.Process "webp")
+    }}
+  {{ end }}
+
+  {{/* Run Image Processing pipeline */}}
+  {{ with $first }}
+    {{ $thumb := images.Filter $thumbFilters . }}
+    {{ if or (eq $.Kind "submission") (eq $.Kind "submission-from-text-file" ) }}
+      {{ $first := images.Filter $submissionFilters . }}
+    {{ else }}
+      {{ $first := images.Filter $fullsizeFilters . }}
+    {{ end }}
+
   {{ else }}
     {{ $id := $.RelPermalink | hash.FNV32a }}
     {{ $idx :=  mod $id (len $images) }}
     {{ $first := index $images $idx }}
-    {{ $thumb := images.Filter $filters $first }}
-    {{ $gallery = dict
-      "page" $
-      "images" $images
-      "thumb" $thumb
-      "first" $.Params.first
-    }}
+    {{ $thumb := images.Filter $thumbFilters $first }}
   {{ end }}
+
+  {{/* Generate gallery */}}
+  {{ $processedImages := slice }}
+  {{ if or (eq $.Kind "submission") (eq $.Kind "submission-from-text-file" ) }}
+    {{ $sub := images.Filter $submissionFilters . }}
+    {{ $processedImages = $processedImages | append $sub }}
+  {{ else if eq $.Kind "term" }}
+    {{ $processedImages = $images }}
+  {{ else }}
+    {{ $fs := images.Filter $fullsizeFilters . }}
+    {{ $processedImages = $processedImages | append $fs }}
+  {{ end }}
+  {{ $gallery = dict
+    "page" $
+    "images" $processedImages
+    "thumb" $thumb
+    "first" $.Params.first
+  }}
+
 {{ end }}
 {{ return $gallery }}
