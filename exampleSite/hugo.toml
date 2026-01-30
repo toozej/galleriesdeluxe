@@ -23,7 +23,7 @@ baseURL = "https://toozej.github.io/galleriesdeluxe"
 [params.gallerydeluxe]
     shuffle     = false
     reverse     = true
-    enable_exif = true
+    enable_exif = false
 
     [params.gallerydeluxe.watermark]
         image = "images/watermark.png" # relative to /assets
