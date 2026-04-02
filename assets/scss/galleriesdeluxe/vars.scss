@@ -1,3 +1,5 @@
+@use "sass:color";
+
 /* Colors. */
 $white: #fff !default;
 $gray_100: #f8f9fa !default;
@@ -15,7 +17,7 @@ $color_primary: #3a98b9 !default;
 $color_secondary: #fff1dc !default;
 $color_text_dark: $black !default;
 $color_text_light: $white !default;
-$color_background: lighten($color_secondary, 60%) !default;
+$color_background: color.adjust($color_secondary, $lightness: 60%) !default;
 $color_background_footer: $color_secondary !default;
 
 $font_family_serif: Charter, "Bitstream Charter", "Sitka Text", Cambria, serif !default;

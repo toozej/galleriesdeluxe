@@ -1,3 +1,5 @@
+@use "vars";
+
 .markdown-body {
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
@@ -46,7 +48,7 @@
 
 .markdown-body a {
   background-color: transparent;
-  color: $color-primary;
+  color: vars.$color-primary;
   text-decoration: none;
 }
 
@@ -215,7 +217,7 @@
 .markdown-body [role="button"]:focus,
 .markdown-body input[type="radio"]:focus,
 .markdown-body input[type="checkbox"]:focus {
-  outline: 2px solid $color-primary;
+  outline: 2px solid vars.$color-primary;
   outline-offset: -2px;
   box-shadow: none;
 }
@@ -231,7 +233,7 @@
 .markdown-body [role="button"]:focus-visible,
 .markdown-body input[type="radio"]:focus-visible,
 .markdown-body input[type="checkbox"]:focus-visible {
-  outline: 2px solid $color-primary;
+  outline: 2px solid vars.$color-primary;
   outline-offset: -2px;
   box-shadow: none;
 }
@@ -812,7 +814,7 @@
   left: -24px;
   pointer-events: none;
   content: "";
-  border: 2px solid $color-primary;
+  border: 2px solid vars.$color-primary;
   border-radius: 6px;
 }
 

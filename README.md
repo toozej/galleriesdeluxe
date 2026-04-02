@@ -10,16 +10,9 @@ I will create a starter template for this theme later, but for now see the [exam
 
 ## Pre-requisites
 
-By default, you need [Dart Sass](https://gohugo.io/hugo-pipes/transpile-sass-to-css/#installation-overview) installed to build a site using this theme.
+You need [Dart Sass](https://gohugo.io/hugo-pipes/transpile-sass-to-css/#installation-overview) installed to build a site using this theme.
 
-We're however currently not using any of the new features in Dart Sass, so you can also use the old `libsass` embedded into the [extended Hugo version](https://gohugo.io/troubleshooting/faq/#i-get--this-feature-is-not-available-in-your-current-hugo-version) by setting the following in your `config.toml`:
-
-```toml
-[params]
-    [params.galleriesdeluxe]
-        # One of dartsass or libsass.
-        sass_transpiler = "libsass"
-```
+**Note:** As of Hugo v0.153.0, `libsass` is deprecated and will be removed in a future release. The `dartsass` transpiler is now the only supported option. See the [Hugo documentation](https://gohugo.io/functions/css/sass/#dart-sass) for more information.
 
 The default and recommended value is `dartsass`.
 

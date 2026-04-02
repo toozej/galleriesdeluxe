@@ -1,0 +1,27 @@
+@use "sass:map";
+@use "sass:meta";
+@use "hugo:vars" as hugo;
+@use "vars-custom" as custom;
+
+@function pick-var($name_underscore, $name_hyphen, $fallback) {
+  $hugo_vars: meta.module-variables("hugo");
+  $custom_vars: meta.module-variables("custom");
+
+  @if map.has-key($hugo_vars, $name_underscore) {
+    @return map.get($hugo_vars, $name_underscore);
+  }
+
+  @if map.has-key($hugo_vars, $name_hyphen) {
+    @return map.get($hugo_vars, $name_hyphen);
+  }
+
+  @if map.has-key($custom_vars, $name_underscore) {
+    @return map.get($custom_vars, $name_underscore);
+  }
+
+  @if map.has-key($custom_vars, $name_hyphen) {
+    @return map.get($custom_vars, $name_hyphen);
+  }
+
+  @return $fallback;
+}

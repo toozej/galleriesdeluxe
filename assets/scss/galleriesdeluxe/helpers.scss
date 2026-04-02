@@ -1,8 +1,11 @@
+@use "sass:color";
+@use "vars";
+
 @function text-color($color) {
-  @if (lightness($color) > 50) {
-    @return $color-text_dark;
+  @if (color.channel($color, "lightness", $space: hsl) > 50) {
+    @return vars.$color-text_dark;
   } @else {
-    @return $color-text_light;
+    @return vars.$color-text_light;
   }
 }
 
