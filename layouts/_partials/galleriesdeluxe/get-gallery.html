@@ -61,10 +61,9 @@
   {{ $gallery = merge $gallery (dict "thumb" ($first | images.Filter $thumbFilters)) }}
 
   {{ $processedImages := slice }}
-  {{ if eq $.Kind "term" }}
-    {{ $processedImages = . }}
-  {{ else }}
-    {{ $processedImages = . }}
+  {{ range $images }}
+    {{ $webpImg := . | images.Filter (images.Process "webp") }}
+    {{ $processedImages = $processedImages | append $webpImg }}
   {{ end }}
   {{ $gallery = merge $gallery (dict "images" $processedImages) }}
 {{ end }}
