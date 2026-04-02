@@ -1,3 +1,4 @@
+@use "sass:color";
 @use "sass:map";
 @use "sass:meta";
 @use "hugo:vars" as hugo;
@@ -21,6 +22,33 @@
 
   @if map.has-key($custom_vars, $name_hyphen) {
     @return map.get($custom_vars, $name_hyphen);
+  }
+
+  @return $fallback;
+}
+
+@function pick-footer-var($background, $fallback) {
+  $hugo_vars: meta.module-variables("hugo");
+  $custom_vars: meta.module-variables("custom");
+
+  @if map.has-key($hugo_vars, "color_background_footer") {
+    @return map.get($hugo_vars, "color_background_footer");
+  }
+
+  @if map.has-key($hugo_vars, "color-background-footer") {
+    @return map.get($hugo_vars, "color-background-footer");
+  }
+
+  @if map.has-key($hugo_vars, "color_background") or map.has-key($hugo_vars, "color-background") {
+    @return color.adjust($background, $lightness: -1%);
+  }
+
+  @if map.has-key($custom_vars, "color_background_footer") {
+    @return map.get($custom_vars, "color_background_footer");
+  }
+
+  @if map.has-key($custom_vars, "color-background-footer") {
+    @return map.get($custom_vars, "color-background-footer");
   }
 
   @return $fallback;

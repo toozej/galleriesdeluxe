@@ -88,10 +88,7 @@
   {{ else if eq $.Kind "term" }}
     {{ $processedImages = . }}
   {{ else }}
-    {{ $fullsizeFilters := slice images.AutoOrient (images.Process "webp") }}
-    {{ range . }}
-      {{ $processedImages = $processedImages | append (. | images.Filter $fullsizeFilters) }}
-    {{ end }}
+    {{ $processedImages = . }}
   {{ end }}
   {{ $gallery = merge $gallery (dict "images" $processedImages) }}
 {{ end }}

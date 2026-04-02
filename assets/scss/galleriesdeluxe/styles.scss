@@ -11,9 +11,12 @@
       "color-background",
       color.adjust(#fff1dc, $lightness: 60%)
     ),
-  $color_background_footer: resolve-vars.pick-var(
-      "color_background_footer",
-      "color-background-footer",
+  $color_background_footer: resolve-vars.pick-footer-var(
+      resolve-vars.pick-var(
+        "color_background",
+        "color-background",
+        color.adjust(#fff1dc, $lightness: 60%)
+      ),
       #fff1dc
     )
 );
