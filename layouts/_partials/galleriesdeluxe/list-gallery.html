@@ -1,6 +1,7 @@
 {{ $pages := .Pages }}
+{{ $gallery_section := site.Params.galleriesdeluxe.gallery_section | default (site.Params.galleriesdeluxe.galleries_alias | default "galleries") }}
 {{ if .IsHome }}
-  {{ with site.GetPage "galleries" }}
+  {{ with site.GetPage $gallery_section }}
     {{ $pages = .RegularPagesRecursive }}
   {{ end }}
 {{ end }}

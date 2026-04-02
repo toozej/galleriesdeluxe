@@ -2,13 +2,28 @@
   <h1>{{ .Title }}</h1>
   <div>
     {{ if .IsHome }}
-      {{ $pages := slice (site.GetPage "categories") }}
-      {{ $pages = $pages | append (where (where site.RegularPages ".Params.layout" "page") ".Section" "!=" "galleries") }}
+      {{ $gallery_section := site.Params.galleriesdeluxe.gallery_section | default (site.Params.galleriesdeluxe.galleries_alias | default "galleries") }}
+      {{ $galleries_alias := site.Params.galleriesdeluxe.galleries_alias | default $gallery_section }}
+      {{ $galleries_page := site.GetPage $gallery_section }}
+      {{ $pages := slice }}
+      {{ with $galleries_page }}
+        {{ $pages = $pages | append (dict "RelPermalink" .RelPermalink "LinkTitle" $galleries_alias "Title" $galleries_alias) }}
+      {{ end }}
+      {{ $categories_page := site.GetPage "categories" }}
+      {{ with $categories_page }}
+        {{ $pages = $pages | append . }}
+      {{ end }}
+      {{ $other_pages := where (where site.RegularPages ".Params.layout" "page") ".Section" "!=" $gallery_section }}
+      {{ range $other_pages }}
+        {{ $pages = $pages | append . }}
+      {{ end }}
       <ul>
-        {{ range $pages }}
-          <li>
-            <a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>
-          </li>
+        {{ range $index, $item := $pages }}
+          {{ with $item }}
+            <li>
+              <a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>
+            </li>
+          {{ end }}
         {{ end }}
       </ul>
     {{ else }}

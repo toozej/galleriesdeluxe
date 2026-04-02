@@ -15,6 +15,9 @@ baseURL = "https://toozej.github.io/galleriesdeluxe"
         description = "A Hugo gallery website"
 
     [params.galleriesdeluxe]
+        gallery_section = "collections"
+        galleries_alias = "collections"
+
         sass_transpiler = "dartsass"
         [params.galleriesdeluxe.sassvars]
             color_background = "#1d1e2c"

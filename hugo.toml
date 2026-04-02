@@ -16,10 +16,13 @@ baseURL = "https://example.com"
         shuffle     = false
         reverse     = true
         enable_exif = false
+    [params.galleriesdeluxe]
+        gallery_section = "galleries"
+        galleries_alias = "collections"
 
 [module]
     [module.hugoVersion]
-        min = "0.108.0"
+        min = "0.156.0"
     [[module.mounts]]
         source = "assets"
         target = "assets"

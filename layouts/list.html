@@ -1,8 +1,9 @@
 {{ define "main" }}
   <div class="galleries">
     {{ $pages := .Pages }}
-    {{ if or .IsHome (and (eq .Kind "section") (eq .Section "galleries")) }}
-      {{ with site.GetPage "galleries" }}
+    {{ $gallery_section := site.Params.galleriesdeluxe.gallery_section | default (site.Params.galleriesdeluxe.galleries_alias | default "galleries") }}
+    {{ if or .IsHome (and (eq .Kind "section") (eq .Section $gallery_section)) }}
+      {{ with site.GetPage $gallery_section }}
         {{ $pages = .RegularPagesRecursive }}
       {{ end }}
     {{ end }}
