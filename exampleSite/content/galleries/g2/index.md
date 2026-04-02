@@ -4,6 +4,7 @@ date: 2020-01-01
 categories: [travel,funny]
 first: true
 featured: "featured.jpg"
+layout: single
 
 ---
 

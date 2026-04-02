@@ -1,12 +1,28 @@
-@import "reset";
+@use "sass:color";
+@use "reset";
+@use "resolve-vars";
 
-/* Import the vars in order of precedence: Hugo config first. */
-@import "hugo:vars";
-@import "vars-custom";
-@import "vars";
+/* Import/use the vars in order of precedence: Hugo config first. */
+@use "vars" with (
+  $color_primary: resolve-vars.pick-var("color_primary", "color-primary", #3a98b9),
+  $color_secondary: resolve-vars.pick-var("color_secondary", "color-secondary", #fff1dc),
+  $color_background: resolve-vars.pick-var(
+      "color_background",
+      "color-background",
+      color.adjust(#fff1dc, $lightness: 60%)
+    ),
+  $color_background_footer: resolve-vars.pick-footer-var(
+      resolve-vars.pick-var(
+        "color_background",
+        "color-background",
+        color.adjust(#fff1dc, $lightness: 60%)
+      ),
+      #fff1dc
+    )
+);
 
-@import "helpers";
-@import "markdown";
+@use "helpers";
+@use "markdown";
 
 html,
 body {
@@ -14,21 +30,21 @@ body {
 }
 
 body {
-  font-family: $font-family-base;
+  font-family: vars.$font-family-base;
   margin: 0;
   padding: 0;
-  font-size: $font_size_base;
-  color: $black;
-  @include dc($color_background);
+  font-size: vars.$font_size_base;
+  color: vars.$black;
+  @include helpers.dc(vars.$color_background);
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   fill: currentColor; /* Applies to SVG only */
 }
 
 footer {
-  @include dc($color_background_footer);
-  box-shadow: 0 50vh 0 50vh $color_background_footer;
-  border-top: 1px solid darken($color_background_footer, 2%);
+  @include helpers.dc(vars.$color_background_footer);
+  box-shadow: 0 50vh 0 50vh vars.$color_background_footer;
+  border-top: 1px solid color.adjust(vars.$color_background_footer, $lightness: -2%);
   margin-top: 3rem;
   padding-top: 3rem;
   padding-bottom: 3rem;
@@ -40,14 +56,14 @@ footer {
     align-items: center;
     flex-direction: column;
 
-    @media (min-width: $breakpoint_md) {
+    @media (min-width: vars.$breakpoint_md) {
       flex-direction: row;
     }
   }
 }
 
 a {
-  color: $color_primary;
+  color: vars.$color_primary;
   text-decoration: none;
   font-weight: bold;
   &:hover {
@@ -116,7 +132,7 @@ header {
 
   a {
     text-decoration: none;
-    color: $color_primary;
+    color: vars.$color_primary;
   }
 
   .card {
@@ -142,7 +158,7 @@ header {
         padding: 0.25rem 0.5rem;
         background-color: rgba(0, 0, 0, 0.5);
         border-radius: 0.25rem;
-        color: $white;
+        color: vars.$white;
         font-size: 0.75rem;
       }
     }
@@ -167,7 +183,7 @@ header {
 /* Utilities */
 
 .serif {
-  font-family: $font_family_serif;
+  font-family: vars.$font_family_serif;
 }
 
 .mt {

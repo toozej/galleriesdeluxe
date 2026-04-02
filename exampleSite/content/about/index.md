@@ -1,6 +1,6 @@
 ---
 title: About
-layout: about
+layout: page
 ---
 
 This is some **text** about me. Commodo ea irure elit Lorem Lorem amet do. Sint in officia qui sit velit ipsum consectetur nostrud adipisicing reprehenderit. Cupidatat exercitation qui fugiat dolore laborum. Deserunt irure id consequat ad.
