@@ -1,0 +1,45 @@
+{{ define "main" }}
+  {{ $gallery_section := site.Params.galleriesdeluxe.gallery_section | default (site.Params.galleriesdeluxe.galleries_alias | default "galleries") }}
+  {{ $galleries_alias := site.Params.galleriesdeluxe.galleries_alias | default $gallery_section }}
+
+  <section class="home-intro markdown-body">
+    {{ .Content }}
+  </section>
+
+  {{ $images := slice }}
+  {{ with .Resources.GetMatch "home-images.txt" }}
+    {{ $image_urls := split .Content "\n" }}
+    {{ range $image_urls }}
+      {{ $url := strings.TrimSpace . }}
+      {{ if and $url (lt (len $images) 3) }}
+        {{ with try (resources.GetRemote $url) }}
+          {{ with .Err }}
+            {{ warnf "Error fetching %s: %s" $url . }}
+          {{ else with .Value }}
+            {{ $images = $images | append (.Process "resize 1600x webp") }}
+          {{ else }}
+            {{ warnf "Unable to get remote resource %q" $url }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  {{ else }}
+    {{ warnf "No home-images.txt found for %s" .RelPermalink }}
+  {{ end }}
+
+  <section class="home-preview">
+    <h2>Featured From {{ humanize $galleries_alias }}</h2>
+    <div class="home-image-grid">
+      {{ range $images }}
+        <figure class="home-image-card">
+          <img src="{{ .RelPermalink }}" alt="Featured image from {{ $galleries_alias }}" width="{{ .Width }}" height="{{ .Height }}" loading="lazy" />
+        </figure>
+      {{ end }}
+    </div>
+    {{ with site.GetPage $gallery_section }}
+      <p class="home-preview-link">
+        <a href="{{ .RelPermalink }}">View all {{ $galleries_alias }}</a>
+      </p>
+    {{ end }}
+  </section>
+{{ end }}

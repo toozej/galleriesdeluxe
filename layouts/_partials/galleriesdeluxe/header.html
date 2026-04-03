@@ -1,53 +1,55 @@
 <header>
   <h1>{{ .Title }}</h1>
   <div>
-    {{ if .IsHome }}
-      {{ $gallery_section := site.Params.galleriesdeluxe.gallery_section | default (site.Params.galleriesdeluxe.galleries_alias | default "galleries") }}
-      {{ $galleries_alias := site.Params.galleriesdeluxe.galleries_alias | default $gallery_section }}
-      {{ $galleries_page := site.GetPage $gallery_section }}
-      {{ $pages := slice }}
-      {{ with $galleries_page }}
-        {{ $pages = $pages | append (dict "RelPermalink" .RelPermalink "LinkTitle" $galleries_alias "Title" $galleries_alias) }}
-      {{ end }}
-      {{ $categories_page := site.GetPage "categories" }}
-      {{ with $categories_page }}
-        {{ $pages = $pages | append . }}
-      {{ end }}
-      {{ $other_pages := where (where site.RegularPages ".Params.layout" "page") ".Section" "!=" $gallery_section }}
-      {{ $other_sections := where (where site.Sections ".Params.layout" "page") ".Section" "!=" $gallery_section }}
-      {{ range $other_pages }}
-        {{ $pages = $pages | append . }}
-      {{ end }}
-      {{ range $other_sections }}
-        {{ $pages = $pages | append . }}
-      {{ end }}
-      <ul>
-        {{ range $index, $item := $pages }}
-          {{ with $item }}
-            <li>
-              <a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>
-            </li>
-          {{ end }}
-        {{ end }}
-      </ul>
-    {{ else }}
-      {{ $categories := .GetTerms "categories" }}
-      <ul>
-        <li>
-          <a href="{{ site.Home.RelPermalink }}">{{ site.Home.LinkTitle }}</a>
-        </li>
-        {{ with .Parent }}
-          {{ if and (not .IsHome) (not .IsSection) }}
-            <li>
-              <a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>
-            </li>
-          {{ end }}
-        {{ end }}
+    {{ $gallery_section := site.Params.galleriesdeluxe.gallery_section | default (site.Params.galleriesdeluxe.galleries_alias | default "galleries") }}
+    {{ $galleries_alias := site.Params.galleriesdeluxe.galleries_alias | default $gallery_section }}
+    {{ $nav_items := slice }}
+    {{ $seen := newScratch }}
 
-        {{ range $categories }}
-          <li><a href="{{ .Page.RelPermalink }}">{{ .Page.Title }}</a></li>
-        {{ end }}
-      </ul>
+    {{ with site.Home }}
+      {{ if not ($seen.Get .RelPermalink) }}
+        {{ $nav_items = $nav_items | append . }}
+        {{ $seen.Set .RelPermalink true }}
+      {{ end }}
     {{ end }}
+
+    {{ with site.GetPage $gallery_section }}
+      {{ if not ($seen.Get .RelPermalink) }}
+        {{ $nav_items = $nav_items | append (dict "RelPermalink" .RelPermalink "LinkTitle" $galleries_alias) }}
+        {{ $seen.Set .RelPermalink true }}
+      {{ end }}
+    {{ end }}
+
+    {{ with site.GetPage "categories" }}
+      {{ if not ($seen.Get .RelPermalink) }}
+        {{ $nav_items = $nav_items | append . }}
+        {{ $seen.Set .RelPermalink true }}
+      {{ end }}
+    {{ end }}
+
+    {{ $other_pages := sort (where (where site.RegularPages ".Params.layout" "page") ".Section" "!=" $gallery_section) "LinkTitle" }}
+    {{ $other_sections := sort (where (where site.Sections ".Params.layout" "page") ".Section" "!=" $gallery_section) "LinkTitle" }}
+
+    {{ range $other_pages }}
+      {{ if not ($seen.Get .RelPermalink) }}
+        {{ $nav_items = $nav_items | append . }}
+        {{ $seen.Set .RelPermalink true }}
+      {{ end }}
+    {{ end }}
+
+    {{ range $other_sections }}
+      {{ if not ($seen.Get .RelPermalink) }}
+        {{ $nav_items = $nav_items | append . }}
+        {{ $seen.Set .RelPermalink true }}
+      {{ end }}
+    {{ end }}
+
+    <ul>
+      {{ range $nav_items }}
+        <li>
+          <a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>
+        </li>
+      {{ end }}
+    </ul>
   </div>
 </header>

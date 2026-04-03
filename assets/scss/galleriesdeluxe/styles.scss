@@ -180,6 +180,43 @@ header {
   }
 }
 
+.home-intro,
+.home-preview {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.home-preview {
+  margin-top: 1rem;
+
+  h2 {
+    margin-bottom: 1rem;
+  }
+}
+
+.home-image-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+.home-image-card {
+  margin: 0;
+
+  img {
+    display: block;
+    width: 100%;
+    height: clamp(320px, 55vw, 680px);
+    object-fit: cover;
+    border-radius: 0.75rem;
+  }
+}
+
+.home-preview-link {
+  margin-top: 1rem;
+}
+
 /* Utilities */
 
 .serif {
