@@ -11,11 +11,11 @@
   {{ $other_galleries := slice }}
   {{ range $pages }}
     {{ $gallery_data := partial "galleriesdeluxe/get-gallery.html" . }}
-    {{ if $gallery_data }}
+    {{ if and $gallery_data $gallery_data.thumb }}
       {{ if eq $gallery_data.first true }}
-        {{ $first_gallery = $first_gallery | append . }}
+        {{ $first_gallery = $first_gallery | append $gallery_data }}
       {{ else }}
-        {{ $other_galleries = $other_galleries | append . }}
+        {{ $other_galleries = $other_galleries | append $gallery_data }}
       {{ end }}
     {{ end }}
   {{ end }}
@@ -23,29 +23,27 @@
   {{ $sorted_galleries := $first_gallery | append $other_galleries }}
 
   {{ range $sorted_galleries }}
-    {{ with partial "galleriesdeluxe/get-gallery.html" . }}
-      <div class="card">
-        <a class="card-img" href="{{ .page.RelPermalink }}">
-          <img
-            src="{{ .thumb.RelPermalink }}"
-            alt="{{ .thumb.Name }}"
-            class=""
-            width="{{ .thumb.Width }}"
-            height="{{ .thumb.Height }}" />
-          <span class="num-photos"
-            >{{ .images | len }} {{ T "photo" ( .images | len) }}</span
-          >
-        </a>
-        <div class="body">
-          <h2>
-            <a href="{{ .page.RelPermalink }}">{{ .page.LinkTitle }}</a>
-          </h2>
-          <p>
-            {{ .page.Summary }}
-          </p>
-        </div>
+    <div class="card">
+      <a class="card-img" href="{{ .page.RelPermalink }}">
+        <img
+          src="{{ .thumb.RelPermalink }}"
+          alt="{{ .thumb.Name }}"
+          class=""
+          width="{{ .thumb.Width }}"
+          height="{{ .thumb.Height }}" />
+        <span class="num-photos"
+          >{{ .images | len }} {{ T "photo" ( .images | len) }}</span
+        >
+      </a>
+      <div class="body">
+        <h2>
+          <a href="{{ .page.RelPermalink }}">{{ .page.LinkTitle }}</a>
+        </h2>
+        <p>
+          {{ .page.Summary }}
+        </p>
       </div>
-    {{ end }}
+    </div>
   {{ end }}
 </div>
 

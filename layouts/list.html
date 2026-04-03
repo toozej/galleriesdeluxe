@@ -1,30 +1,31 @@
 {{ define "main" }}
-  <div class="galleries">
-    {{ $pages := .Pages }}
-    {{ $gallery_section := site.Params.galleriesdeluxe.gallery_section | default (site.Params.galleriesdeluxe.galleries_alias | default "galleries") }}
-    {{ if or .IsHome (and (eq .Kind "section") (eq .Section $gallery_section)) }}
-      {{ with site.GetPage $gallery_section }}
-        {{ $pages = .RegularPagesRecursive }}
-      {{ end }}
-    {{ end }}
-
-    {{ $first_gallery := slice }}
-    {{ $other_galleries := slice }}
-    {{ range $pages }}
-      {{ $gallery_data := partial "galleriesdeluxe/get-gallery.html" . }}
-      {{ if $gallery_data }}
-        {{ if eq $gallery_data.first true }}
-          {{ $first_gallery = $first_gallery | append . }}
-        {{ else }}
-          {{ $other_galleries = $other_galleries | append . }}
+  {{ $gallery_section := site.Params.galleriesdeluxe.gallery_section | default (site.Params.galleriesdeluxe.galleries_alias | default "galleries") }}
+  {{ $is_gallery_listing := or .IsHome (and (eq .Kind "section") (eq .Section $gallery_section)) (eq .Kind "taxonomy") }}
+  {{ if $is_gallery_listing }}
+    <div class="galleries">
+      {{ $pages := .Pages }}
+      {{ if or .IsHome (and (eq .Kind "section") (eq .Section $gallery_section)) }}
+        {{ with site.GetPage $gallery_section }}
+          {{ $pages = .RegularPagesRecursive }}
         {{ end }}
       {{ end }}
-    {{ end }}
 
-    {{ $sorted_galleries := $first_gallery | append $other_galleries }}
+      {{ $first_gallery := slice }}
+      {{ $other_galleries := slice }}
+      {{ range $pages }}
+        {{ $gallery_data := partial "galleriesdeluxe/get-gallery.html" . }}
+        {{ if and $gallery_data $gallery_data.thumb }}
+          {{ if eq $gallery_data.first true }}
+            {{ $first_gallery = $first_gallery | append $gallery_data }}
+          {{ else }}
+            {{ $other_galleries = $other_galleries | append $gallery_data }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
 
-    {{ range $sorted_galleries }}
-      {{ with partial "galleriesdeluxe/get-gallery.html" . }}
+      {{ $sorted_galleries := $first_gallery | append $other_galleries }}
+
+      {{ range $sorted_galleries }}
         <div class="card">
           <a class="card-img" href="{{ .page.RelPermalink }}">
             <img
@@ -48,6 +49,10 @@
           </div>
         </div>
       {{ end }}
-    {{ end }}
-  </div>
+    </div>
+  {{ else }}
+    <div class="markdown-body">
+      {{ .Content }}
+    </div>
+  {{ end }}
 {{ end }}

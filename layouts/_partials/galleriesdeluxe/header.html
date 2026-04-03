@@ -14,7 +14,11 @@
         {{ $pages = $pages | append . }}
       {{ end }}
       {{ $other_pages := where (where site.RegularPages ".Params.layout" "page") ".Section" "!=" $gallery_section }}
+      {{ $other_sections := where (where site.Sections ".Params.layout" "page") ".Section" "!=" $gallery_section }}
       {{ range $other_pages }}
+        {{ $pages = $pages | append . }}
+      {{ end }}
+      {{ range $other_sections }}
         {{ $pages = $pages | append . }}
       {{ end }}
       <ul>
