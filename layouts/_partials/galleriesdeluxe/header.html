@@ -1,5 +1,18 @@
 <header>
-  <h1>{{ .Title }}</h1>
+  <div class="header-title-row">
+    <h1>{{ .Title }}</h1>
+    <div class="theme-toggle" role="group" aria-label="Color theme">
+      <button type="button" class="theme-toggle-button" data-theme-choice="light" aria-label="Use light theme" title="Light theme" aria-pressed="false">
+        <span aria-hidden="true">☀️</span>
+      </button>
+      <button type="button" class="theme-toggle-button" data-theme-choice="system" aria-label="Use system theme" title="System theme" aria-pressed="false">
+        <span aria-hidden="true">🖥️</span>
+      </button>
+      <button type="button" class="theme-toggle-button" data-theme-choice="dark" aria-label="Use dark theme" title="Dark theme" aria-pressed="true">
+        <span aria-hidden="true">🌙</span>
+      </button>
+    </div>
+  </div>
   <div>
     {{ $gallery_section := site.Params.galleriesdeluxe.gallery_section | default (site.Params.galleriesdeluxe.galleries_alias | default "galleries") }}
     {{ $galleries_alias := site.Params.galleriesdeluxe.galleries_alias | default $gallery_section }}
