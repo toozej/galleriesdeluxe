@@ -1,0 +1,31 @@
+{{ $primarySections := slice "cameras" "lenses" "scanning+editing" }}
+
+<div class="uses-catalog uses-catalog-index">
+  <div class="markdown-body uses-intro">
+    {{ .Content }}
+  </div>
+
+  {{ range $primarySections }}
+    {{ with site.GetPage (printf "uses/%s" .) }}
+      {{ $items := sort .RegularPages "LinkTitle" }}
+      <section class="uses-group">
+        <div class="uses-group-header">
+          <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+          <a class="uses-group-link" href="{{ .RelPermalink }}">View all</a>
+        </div>
+        {{ partial "galleriesdeluxe/uses-card-grid.html" (dict "pages" $items) }}
+      </section>
+    {{ end }}
+  {{ end }}
+
+  {{ with site.GetPage "uses/archive" }}
+    {{ $items := sort .RegularPages "LinkTitle" }}
+    <section class="uses-group uses-group-archive">
+      <div class="uses-group-header">
+        <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+        <a class="uses-group-link" href="{{ .RelPermalink }}">Browse archive</a>
+      </div>
+      {{ partial "galleriesdeluxe/uses-card-grid.html" (dict "pages" $items) }}
+    </section>
+  {{ end }}
+</div>

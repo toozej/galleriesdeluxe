@@ -1,0 +1,20 @@
+{{ $media := partial "galleriesdeluxe/get-uses-media.html" . }}
+
+<article class="uses-item">
+  <div class="uses-item-hero-wrap">
+    {{ with $media.hero }}
+      <img
+        class="uses-item-hero"
+        src="{{ .RelPermalink }}"
+        alt="{{ $.LinkTitle }}"
+        width="{{ .Width }}"
+        height="{{ .Height }}" />
+    {{ else }}
+      <div class="uses-item-hero-placeholder">Image coming soon</div>
+    {{ end }}
+  </div>
+
+  <div class="markdown-body uses-item-content">
+    {{ .Content }}
+  </div>
+</article>

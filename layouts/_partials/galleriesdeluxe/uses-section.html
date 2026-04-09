@@ -1,0 +1,8 @@
+{{ $items := sort .RegularPages "LinkTitle" }}
+
+<div class="uses-catalog uses-catalog-section">
+  <div class="markdown-body uses-intro">
+    {{ .Content }}
+  </div>
+  {{ partial "galleriesdeluxe/uses-card-grid.html" (dict "pages" $items) }}
+</div>

@@ -1,0 +1,43 @@
+{{ $pages := .pages }}
+
+{{ if gt (len $pages) 0 }}
+  <div class="uses-grid">
+    {{ range $pages }}
+      {{ $page := . }}
+      {{ $media := partial "galleriesdeluxe/get-uses-media.html" . }}
+      {{ $rawContent := .RawContent | default "" }}
+      {{ $introChunk := index (split $rawContent "\n|") 0 }}
+      {{ $summary := $introChunk | markdownify | plainify | strings.TrimSpace }}
+      {{ $meta := slice }}
+      {{ with .Params.type }}{{ $meta = $meta | append . }}{{ end }}
+      {{ with .Params.status }}{{ $meta = $meta | append . }}{{ end }}
+      {{ with .Params.acquired }}{{ $meta = $meta | append (printf "Acquired %v" .) }}{{ end }}
+
+      <article class="uses-card">
+        <a class="uses-card-image" href="{{ .RelPermalink }}" aria-label="Open {{ .LinkTitle }} details">
+          {{ with $media.thumb }}
+            <img
+              src="{{ .RelPermalink }}"
+              alt="{{ $page.LinkTitle }}"
+              width="{{ .Width }}"
+              height="{{ .Height }}" />
+          {{ else }}
+            <span class="uses-card-placeholder">No image yet</span>
+          {{ end }}
+        </a>
+
+        <div class="uses-card-body">
+          <h2><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></h2>
+          {{ with $meta }}
+            <p class="uses-card-meta">{{ delimit . " • " }}</p>
+          {{ end }}
+          {{ with $summary }}
+            <p>{{ . }}</p>
+          {{ end }}
+        </div>
+      </article>
+    {{ end }}
+  </div>
+{{ else }}
+  <p class="uses-empty">No items published in this section yet.</p>
+{{ end }}

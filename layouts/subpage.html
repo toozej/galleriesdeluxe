@@ -1,5 +1,21 @@
 {{ define "main" }}
-  <div class="markdown-body">
-    {{ .Content }}
-  </div>
+  {{ $usesRoot := site.GetPage "uses" }}
+  {{ $isUses := false }}
+  {{ if and $usesRoot (eq .RelPermalink $usesRoot.RelPermalink) }}
+    {{ $isUses = true }}
+  {{ else if and $usesRoot .FirstSection (eq .FirstSection.RelPermalink $usesRoot.RelPermalink) }}
+    {{ $isUses = true }}
+  {{ end }}
+
+  {{ if $isUses }}
+    {{ if .IsSection }}
+      {{ partial "galleriesdeluxe/uses-section.html" . }}
+    {{ else }}
+      {{ partial "galleriesdeluxe/uses-item.html" . }}
+    {{ end }}
+  {{ else }}
+    <div class="markdown-body">
+      {{ .Content }}
+    </div>
+  {{ end }}
 {{ end }}

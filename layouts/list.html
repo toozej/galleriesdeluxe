@@ -1,4 +1,9 @@
 {{ define "main" }}
+  {{ $usesRoot := site.GetPage "uses" }}
+  {{ $is_uses_listing := and $usesRoot (eq .RelPermalink $usesRoot.RelPermalink) }}
+  {{ if $is_uses_listing }}
+    {{ partial "galleriesdeluxe/uses-index.html" . }}
+  {{ else }}
   {{ $gallery_section := site.Params.galleriesdeluxe.gallery_section | default (site.Params.galleriesdeluxe.galleries_alias | default "galleries") }}
   {{ $is_gallery_listing := or .IsHome (and (eq .Kind "section") (eq .Section $gallery_section)) (eq .Kind "taxonomy") }}
   {{ if $is_gallery_listing }}
@@ -54,5 +59,6 @@
     <div class="markdown-body">
       {{ .Content }}
     </div>
+  {{ end }}
   {{ end }}
 {{ end }}
