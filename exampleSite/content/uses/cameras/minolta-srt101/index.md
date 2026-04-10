@@ -4,7 +4,7 @@ layout: subpage
 type: Film SLR
 status: Active
 acquired: 2022
-featured: minolta-srt101.jpg
+featured: https://upload.wikimedia.org/wikipedia/commons/4/4d/Minolta_srt_101_IMGP3035_wp.jpg
 ---
 
 I keep two SR-T 101 bodies loaded with different film stocks so I can switch between color and black-and-white without overthinking it.

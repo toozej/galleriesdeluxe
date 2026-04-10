@@ -3,14 +3,24 @@
 
 {{ with .Params.featured }}
   {{ $featured := . }}
-  {{ $featuredBase := path.Base $featured }}
-  {{ $featuredExt := path.Ext $featuredBase }}
-  {{ $featuredName := strings.TrimSuffix $featuredExt $featuredBase }}
-  {{ range $images }}
-    {{ $imgBase := path.Base .Name }}
-    {{ $imgExt := path.Ext $imgBase }}
-    {{ if and (strings.Contains $imgBase $featuredName) (eq $imgExt $featuredExt) }}
-      {{ $selected = . }}
+  {{ if or (strings.HasPrefix $featured "https://") (strings.HasPrefix $featured "http://") }}
+    {{ with try (resources.GetRemote $featured) }}
+      {{ with .Err }}
+        {{ warnf "Error fetching uses featured image %q: %s" $featured . }}
+      {{ else with .Value }}
+        {{ $selected = . }}
+      {{ end }}
+    {{ end }}
+  {{ else }}
+    {{ $featuredBase := path.Base $featured }}
+    {{ $featuredExt := path.Ext $featuredBase }}
+    {{ $featuredName := strings.TrimSuffix $featuredExt $featuredBase }}
+    {{ range $images }}
+      {{ $imgBase := path.Base .Name }}
+      {{ $imgExt := path.Ext $imgBase }}
+      {{ if and (strings.Contains $imgBase $featuredName) (eq $imgExt $featuredExt) }}
+        {{ $selected = . }}
+      {{ end }}
     {{ end }}
   {{ end }}
 {{ end }}
