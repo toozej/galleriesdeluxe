@@ -7,6 +7,11 @@
   {{ $gallery_section := site.Params.galleriesdeluxe.gallery_section | default (site.Params.galleriesdeluxe.galleries_alias | default "galleries") }}
   {{ $is_gallery_listing := or .IsHome (and (eq .Kind "section") (eq .Section $gallery_section)) (eq .Kind "taxonomy") }}
   {{ if $is_gallery_listing }}
+    {{ if and (eq .Kind "taxonomy") .Content }}
+      <div class="markdown-body">
+        {{ .Content }}
+      </div>
+    {{ end }}
     <div class="galleries">
       {{ $pages := .Pages }}
       {{ if or .IsHome (and (eq .Kind "section") (eq .Section $gallery_section)) }}

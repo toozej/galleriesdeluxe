@@ -1,18 +1,79 @@
 {{ $images := slice }}
+{{ $entries := slice }}
+
+{{ $collectionCategories := partial "galleriesdeluxe/normalize-categories.html" (dict "values" .Params.categories) }}
+{{ $imageCategoriesMap := .Params.image_categories | default dict }}
+{{ $normalizedImageCategoryMap := dict }}
+{{ range $key, $value := $imageCategoriesMap }}
+  {{ $mapKey := lower (strings.TrimSpace (printf "%v" $key)) }}
+  {{ if $mapKey }}
+    {{ $normalizedImageCategoryMap = merge $normalizedImageCategoryMap (dict $mapKey (partial "galleriesdeluxe/normalize-categories.html" (dict "values" $value))) }}
+  {{ end }}
+{{ end }}
+
 {{ if eq .Layout "from-text-file" }}
   {{ $imagesList := .Resources.GetMatch "images.txt" }}
   {{ if $imagesList }}
-    {{ $imagesURLs := split $imagesList.Content "\n" }}
-    {{ range $imagesURLs }}
-      {{ if . }}
-        {{ with try (resources.GetRemote .) }}
-          {{ with .Err }}
-            {{ warnf "Error fetching %s: %s" . .Err }}
-          {{ else with .Value }}
-            {{ $img := . | resources.Copy (printf "%s%s" $.File.Dir .Name) }}
-            {{ $images = $images | append $img }}
-          {{ else }}
-            {{ warnf "Unable to get remote resource %q" . }}
+    {{ $imageLines := split $imagesList.Content "\n" }}
+    {{ range $imageLines }}
+      {{ $line := strings.TrimSpace . }}
+      {{ if $line }}
+        {{ $parsed := partial "galleriesdeluxe/parse-image-line.html" (dict "line" $line) }}
+        {{ $url := $parsed.url }}
+        {{ if $url }}
+          {{ with try (resources.GetRemote $url) }}
+            {{ with .Err }}
+              {{ warnf "Error fetching %s: %s" $url . }}
+            {{ else with .Value }}
+              {{ $img := . | resources.Copy (printf "%s%s" $.File.Dir .Name) }}
+              {{ $images = $images | append $img }}
+
+              {{ $extraCategories := slice }}
+              {{ range $parsed.extraCategories }}
+                {{ if not (in $extraCategories .) }}
+                  {{ $extraCategories = $extraCategories | append . }}
+                {{ end }}
+              {{ end }}
+
+              {{ $urlMapKey := lower (strings.TrimSpace $url) }}
+              {{ with index $normalizedImageCategoryMap $urlMapKey }}
+                {{ range . }}
+                  {{ if not (in $extraCategories .) }}
+                    {{ $extraCategories = $extraCategories | append . }}
+                  {{ end }}
+                {{ end }}
+              {{ end }}
+
+              {{ $basenameKey := lower (path.Base $img.Name) }}
+              {{ with index $normalizedImageCategoryMap $basenameKey }}
+                {{ range . }}
+                  {{ if not (in $extraCategories .) }}
+                    {{ $extraCategories = $extraCategories | append . }}
+                  {{ end }}
+                {{ end }}
+              {{ end }}
+
+              {{ $effectiveCategories := slice }}
+              {{ range $collectionCategories }}
+                {{ if not (in $effectiveCategories .) }}
+                  {{ $effectiveCategories = $effectiveCategories | append . }}
+                {{ end }}
+              {{ end }}
+              {{ range $extraCategories }}
+                {{ if not (in $effectiveCategories .) }}
+                  {{ $effectiveCategories = $effectiveCategories | append . }}
+                {{ end }}
+              {{ end }}
+
+              {{ $entries = $entries | append (dict
+                "resource" $img
+                "name" $img.Name
+                "effectiveCategories" $effectiveCategories
+                "pageRelPermalink" $.RelPermalink
+              ) }}
+            {{ else }}
+              {{ warnf "Unable to get remote resource %q" $url }}
+            {{ end }}
           {{ end }}
         {{ end }}
       {{ end }}
@@ -20,17 +81,89 @@
   {{ else }}
     {{ warnf "No images.txt found for %s" .RelPermalink }}
   {{ end }}
+{{ else if eq .Layout "feed" }}
+  {{ $seen := newScratch }}
+  {{ $gallerySection := site.Params.galleriesdeluxe.gallery_section | default (site.Params.galleriesdeluxe.galleries_alias | default "galleries") }}
+  {{ with site.GetPage $gallerySection }}
+    {{ range .RegularPagesRecursive }}
+      {{ $sourceGallery := partial "galleriesdeluxe/get-gallery.html" . }}
+      {{ with $sourceGallery.entries }}
+        {{ range . }}
+          {{ if not ($seen.Get .resource.RelPermalink) }}
+            {{ $seen.Set .resource.RelPermalink true }}
+            {{ $images = $images | append .resource }}
+            {{ $entries = $entries | append . }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ else if and (eq .Kind "term") (eq .Data.Plural "categories") }}
+  {{ $term := lower (strings.TrimSpace .Data.Term) }}
+  {{ $seen := newScratch }}
+  {{ $gallerySection := site.Params.galleriesdeluxe.gallery_section | default (site.Params.galleriesdeluxe.galleries_alias | default "galleries") }}
+  {{ with site.GetPage $gallerySection }}
+    {{ range .RegularPagesRecursive }}
+      {{ $sourceGallery := partial "galleriesdeluxe/get-gallery.html" . }}
+      {{ with $sourceGallery.entries }}
+        {{ range . }}
+          {{ if and (in .effectiveCategories $term) (not ($seen.Get .resource.RelPermalink)) }}
+            {{ $seen.Set .resource.RelPermalink true }}
+            {{ $images = $images | append .resource }}
+            {{ $entries = $entries | append . }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
 {{ else if eq .Kind "term" }}
   {{ range .Pages }}
     {{ with partial "galleriesdeluxe/get-gallery.html" . }}
-      {{ $images = $images | append .images }}
+      {{ range .images }}
+        {{ $images = $images | append . }}
+      {{ end }}
+      {{ with .entries }}
+        {{ range . }}
+          {{ $entries = $entries | append . }}
+        {{ end }}
+      {{ end }}
     {{ end }}
   {{ end }}
 {{ else }}
   {{ $images = .Resources.ByType "image" }}
+  {{ range $images }}
+    {{ $name := path.Base .Name }}
+    {{ $extraCategories := slice }}
+    {{ with index $normalizedImageCategoryMap (lower $name) }}
+      {{ range . }}
+        {{ if not (in $extraCategories .) }}
+          {{ $extraCategories = $extraCategories | append . }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+
+    {{ $effectiveCategories := slice }}
+    {{ range $collectionCategories }}
+      {{ if not (in $effectiveCategories .) }}
+        {{ $effectiveCategories = $effectiveCategories | append . }}
+      {{ end }}
+    {{ end }}
+    {{ range $extraCategories }}
+      {{ if not (in $effectiveCategories .) }}
+        {{ $effectiveCategories = $effectiveCategories | append . }}
+      {{ end }}
+    {{ end }}
+
+    {{ $entries = $entries | append (dict
+      "resource" .
+      "name" .Name
+      "effectiveCategories" $effectiveCategories
+      "pageRelPermalink" $.RelPermalink
+    ) }}
+  {{ end }}
 {{ end }}
 
-{{ $gallery := dict "images" $images "page" . "first" .Params.first }}
+{{ $gallery := dict "images" $images "entries" $entries "page" . "first" .Params.first }}
 
 {{ with $images }}
   {{ $first := "" }}

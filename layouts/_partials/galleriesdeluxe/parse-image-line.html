@@ -1,0 +1,17 @@
+{{ $raw := strings.TrimSpace .line }}
+{{ $url := $raw }}
+{{ $extraCategories := slice }}
+
+{{ if in $raw "|" }}
+  {{ $parts := split $raw "|" }}
+  {{ $url = strings.TrimSpace (index $parts 0) }}
+  {{ if gt (len $parts) 1 }}
+    {{ $tail := strings.TrimSpace (delimit (after 1 $parts) "|") }}
+    {{ if $tail }}
+      {{ $categories := split $tail "," }}
+      {{ $extraCategories = partial "galleriesdeluxe/normalize-categories.html" (dict "values" $categories) }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{ return (dict "url" $url "extraCategories" $extraCategories) }}

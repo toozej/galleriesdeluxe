@@ -1,0 +1,12 @@
+{{ define "main" }}
+  {{ if .Content }}
+    <div class="markdown-body">
+      {{ .Content }}
+    </div>
+  {{ end }}
+  {{ partial "galleriesdeluxe/list-gallery.html" . }}
+{{ end }}
+
+{{ define "head-custom" }}
+  {{ partial "gallerydeluxe/head.html" . }}
+{{ end }}

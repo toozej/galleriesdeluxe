@@ -40,6 +40,13 @@
       {{ end }}
     {{ end }}
 
+    {{ with site.GetPage "feed" }}
+      {{ if not ($seen.Get .RelPermalink) }}
+        {{ $nav_items = $nav_items | append . }}
+        {{ $seen.Set .RelPermalink true }}
+      {{ end }}
+    {{ end }}
+
     {{ $other_pages := sort (where (where site.RegularPages ".Params.layout" "page") ".Section" "!=" $gallery_section) "LinkTitle" }}
     {{ $other_sections := sort (where (where site.Sections ".Params.layout" "page") ".Section" "!=" $gallery_section) "LinkTitle" }}
 

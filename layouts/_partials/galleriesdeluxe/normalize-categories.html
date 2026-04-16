@@ -1,0 +1,19 @@
+{{ $values := .values }}
+{{ $normalized := slice }}
+{{ if $values }}
+  {{ if reflect.IsSlice $values }}
+    {{ range $values }}
+      {{ $value := lower (strings.TrimSpace (printf "%v" .)) }}
+      {{ if and $value (not (in $normalized $value)) }}
+        {{ $normalized = $normalized | append $value }}
+      {{ end }}
+    {{ end }}
+  {{ else }}
+    {{ $value := lower (strings.TrimSpace (printf "%v" $values)) }}
+    {{ if $value }}
+      {{ $normalized = $normalized | append $value }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{ return $normalized }}
