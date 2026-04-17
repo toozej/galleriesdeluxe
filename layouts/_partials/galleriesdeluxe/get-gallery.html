@@ -163,6 +163,11 @@
   {{ end }}
 {{ end }}
 
+{{ if eq .Layout "feed" }}
+  {{ $images = collections.Reverse $images }}
+  {{ $entries = collections.Reverse $entries }}
+{{ end }}
+
 {{ $gallery := dict "images" $images "entries" $entries "page" . "first" .Params.first }}
 
 {{ with $images }}
