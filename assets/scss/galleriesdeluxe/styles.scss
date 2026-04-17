@@ -6,6 +6,17 @@
 @use "vars" with (
   $color_primary: resolve-vars.pick-var("color_primary", "color-primary", #3a98b9),
   $color_secondary: resolve-vars.pick-var("color_secondary", "color-secondary", #fff1dc),
+  $font_family_sans_serif: resolve-vars.pick-var(
+      "font_family_sans_serif",
+      "font-family-sans-serif",
+      (Seravek, "Gill Sans Nova", Ubuntu, Calibri, "DejaVu Sans", source_sans_pro, sans_serif)
+    ),
+  $font_family_base: resolve-vars.pick-var(
+      "font_family_base",
+      "font-family-base",
+      (Seravek, "Gill Sans Nova", Ubuntu, Calibri, "DejaVu Sans", source_sans_pro, sans_serif)
+    ),
+  $font_size_base: resolve-vars.pick-var("font_size_base", "font-size-base", 16px),
   $color_background: resolve-vars.pick-var(
       "color_background",
       "color-background",
@@ -24,16 +35,16 @@
 @use "helpers";
 @use "markdown";
 
-$theme_dark_bg: resolve-vars.pick-var("color_background_dark", "color-background-dark", vars.$color_background);
+$theme_dark_bg: resolve-vars.pick-var("color_background_dark", "color-background-dark", #08061c);
 $theme_dark_text: resolve-vars.pick-var("color_text_dark", "color-text-dark", vars.$white);
 $theme_dark_footer_bg: $theme_dark_bg;
-$theme_dark_link: resolve-vars.pick-var("color_link_dark", "color-link-dark", #fbb7c0);
+$theme_dark_link: resolve-vars.pick-var("color_link_dark", "color-link-dark", #4586d5);
 $theme_dark_footer_border: $theme_dark_bg;
 
 $theme_light_bg: resolve-vars.pick-var("color_background_light", "color-background-light", #c5c2bdf2);
 $theme_light_text: resolve-vars.pick-var("color_text_light", "color-text-light", vars.$black);
 $theme_light_footer_bg: $theme_light_bg;
-$theme_light_link: resolve-vars.pick-var("color_link_light", "color-link-light", #b05a75);
+$theme_light_link: resolve-vars.pick-var("color_link_light", "color-link-light", #2e299d);
 $theme_light_footer_border: $theme_light_bg;
 
 html,
@@ -485,10 +496,6 @@ header {
 }
 
 /* Utilities */
-
-.serif {
-  font-family: vars.$font_family_serif;
-}
 
 .mt {
   margin-top: 1rem;

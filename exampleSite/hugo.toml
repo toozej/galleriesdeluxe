@@ -20,13 +20,15 @@ baseURL = "https://toozej.github.io/galleriesdeluxe"
 
         sass_transpiler = "dartsass"
         [params.galleriesdeluxe.sassvars]
-            color_background       = "#1d1e2c"
-            color_background_dark  = "#1d1e2c"
+            color_background       = "#08061c"
+            color_background_dark  = "#08061c"
             color_text_dark        = "#ffffff"
-            color_link_dark        = "#fbb7c0"
+            color_link_dark        = "#4586d5"
             color_background_light = "#c5c2bdf2"
             color_text_light       = "#000000"
-            color_link_light       = "#b05a75"
+            color_link_light       = "#2e299d"
+            font_family_base       = '"Open Sans", "Gill Sans Nova", Ubuntu, Calibri, "DejaVu Sans", sans-serif'
+            font_size_base         = "16px"
 
 [params.gallerydeluxe]
     shuffle     = false
