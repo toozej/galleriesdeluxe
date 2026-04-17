@@ -1,12 +1,17 @@
-
 name        = "Galleries Deluxe"
 license     = "MIT"
-licenselink = "https://github.com/bep/galleriesdeluxe/blob/main/LICENSE"
-description = "Multi gallery theme suitable for large galleries."
-homepage    = "https://github.com/bep/galleriesdeluxe"
-demosite    = "https://galleriesdeluxe.netlify.app/"
-tags        = ["gallery", "sass"]
-min_version = "0.129.0"
+licenselink = "https://github.com/toozej/galleriesdeluxe/blob/main/LICENSE"
+description = "Multi gallery theme suitable for photography portfolio sites with large galleries."
+homepage    = "https://github.com/toozej/galleriesdeluxe"
+demosite    = "https://toozej.github.io/galleriesdeluxe/"
+tags        = ["galleries", "gallery", "sass"]
+min_version = "0.156.0"
 [author]
-  name     = "Bjørn Erik Pedersen"
-  homepage = "http://bep.is"
+  name     = "toozej"
+  homepage = "https://github.com/toozej"
+
+[original]
+  author   = "Bjørn Erik Pedersen"
+  homepage = "https://bep.is"
+  repo     = "https://github.com/bep/galleriesdeluxe"
+  demosite = "https://galleriesdeluxe.netlify.app/"
