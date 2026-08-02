@@ -48,4 +48,4 @@ baseURL = "https://example.com"
     [[module.imports]]
         path = "github.com/toozej/gallerydeluxe"
     [[module.imports]]
-        path = "github.com/bep/hugo-mod-misc/common-partials"
+        path = "github.com/toozej/hugo-mod-misc/common-partials"
